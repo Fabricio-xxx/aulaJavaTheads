@@ -17,11 +17,16 @@ public class implementacaoFilaThread extends Thread {
 
 	@Override // run para ficar procesando
 	public void run() {
-		Iterator iteracao = pilha_fila.iterator();
+		System.out.println("fila rodando");
+		
+		
 
-		synchronized (iteracao) {// para bloquear o acesso a esta lista por outros processos// (garantindo que só
+		while(true) {
+		
+	    
+		synchronized (pilha_fila) {// para bloquear o acesso a esta lista por outros processos// (garantindo que só
 									// essa thread ira acessar a lista
-
+			Iterator iteracao = pilha_fila.iterator();
 			while (iteracao.hasNext()) {// enquanto conter dados na lista ira processar
 
 				objetoFilaThread processar = (objetoFilaThread) iteracao.next();
@@ -35,8 +40,9 @@ public class implementacaoFilaThread extends Thread {
 				//--teste
 				
 				
-				System.out.println(processar.getEmail());
+				System.out.println("-------------------------------------");
 				System.out.println(processar.getNome());
+				System.out.println(processar.getEmail());
 				
 				
 				
@@ -47,23 +53,29 @@ public class implementacaoFilaThread extends Thread {
 
 				// dar um tempo para que o java de uma descarga de memoria
 				try {
-					Thread.sleep(100);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
 			}
-
 		}
-
+		
+		
+		
 		try {// prossou toda a lista dar um tempo para limpesa de memoria
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-	}
+		
+		}
+		
+	
+	}	
+	
+	
 
 }
