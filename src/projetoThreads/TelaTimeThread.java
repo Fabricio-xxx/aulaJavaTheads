@@ -5,6 +5,10 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -26,6 +30,57 @@ public class TelaTimeThread extends JDialog{
 	
 	private JButton jButton = new JButton("start"); //criar o botão
 	private JButton jButton2 = new JButton("stop");
+	
+	//interface para criar a thread com o metodo que sera executado
+	private Runnable thread1 = new Runnable() {
+		
+		@Override
+		public void run() {
+			while(true) {//fica sempre rodando ate matar a thread
+				mostraTempo.setText(new SimpleDateFormat("dd/MM/yyyy hh:mm.ss").
+						format(Calendar.getInstance().getTime())); // entrega o valor na caixa de texto ja formado, (pega as informações da classe "Calendar" já formatada
+				
+				//para não travar o metodo dar 1 segundo de tempo até continuar
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			
+		}	
+		
+	};
+	
+private Runnable thread2 = new Runnable() {
+		
+		@Override
+		public void run() {
+			while(true) {//fica sempre rodando ate matar a thread
+				mostraTempo2.setText(new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").
+						format(Calendar.getInstance().getTime())); // entrega o valor na caixa de texto ja formado, (pega as informações da classe "Calendar" já formatada
+				
+				//para não travar o metodo dar 1 segundo de tempo até continuar
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			
+		}	
+		
+	};
+	
+	
+	
+	private Thread thread1Time;
+	private Thread thread2Time;
+	
 	
 	//metodo construtos// executa o que tiver dentro quando iniciar o objeto
 	public TelaTimeThread() {
@@ -77,6 +132,40 @@ public class TelaTimeThread extends JDialog{
 		jButton2.setPreferredSize(new Dimension(92, 25));
 		gridBagConstraints.gridx ++; //adicionar ao lado do botão start// o grid so vai até quatra linhas
 		jPanel.add(jButton2, gridBagConstraints);
+		
+		//metodo para chamar a ac~]ao do botão
+		jButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) { //executa o clique no botão
+				
+				thread1Time = new Thread(thread1); //cria o objeto thread
+				thread1Time.start();//metodo que ezecuta o metodo da thread1
+				
+				thread2Time = new Thread(thread2); 
+				thread2Time.start();
+				
+				jButton.setEnabled(false);//desabilita o botão de start depois que clicar nele
+				jButton2.setEnabled(true);//abilita o botão stop 
+			}
+		});
+		
+		jButton2.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				thread1Time.stop();
+				thread2Time.stop();
+				
+				jButton2.setEnabled(false);//desabilita o botão de stop depois que clicar nele
+				jButton.setEnabled(true);//abilita o botão de start
+				
+				
+			}
+		});
+		
+		jButton2.setEnabled(false); //desabilita o botão de stop
+		
 		
 		
 		add(jPanel, BorderLayout.WEST); //adicioanl no diolog(sem isso não o label no aperece no panel)
